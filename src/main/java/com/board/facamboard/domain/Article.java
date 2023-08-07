@@ -22,14 +22,16 @@ import java.util.Set;
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy"),
 })
-@EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Article {
+public class Article extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Setter @Column(nullable = false) private String title; // 제목
+
     @Setter @Column(nullable = false, length = 10000)private String content; // 본문
+
     @Setter private String hashtag; // 해시태그
     
     // 양방향 바인딩
@@ -42,12 +44,6 @@ public class Article {
     // article > articlecomment >> / article
     @ToString.Exclude @OrderBy("id")  @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) // 공부 목적
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
-
-    // 메타 데이터
-    @CreatedDate @Column(nullable = false) private LocalDateTime createdAt; // 생성일시
-    @CreatedBy @Column(nullable = false, length = 100) private String createdBy; // 생성자
-    @LastModifiedDate @Column(nullable = false) private LocalDateTime modifiedAt; // 수정일시
-    @LastModifiedBy  @Column(nullable = false, length = 100) private String modifiedBy; // 수정자
 
     // protected 사용해서 밖에서 New 사용하지 못하도록 함
     protected Article(){}
