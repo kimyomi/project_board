@@ -26,8 +26,8 @@ spring:
 ---
 # 새로운 페이지
 
-spring:
-  config.activate.on-profile: testdb
+#spring:
+#  config.activate.on-profile: testdb
 #  datasource:
 #    url: ${JAWSDB_URL}
 #    driver-class-name: com.mysql.cj.jdbc.Driver
