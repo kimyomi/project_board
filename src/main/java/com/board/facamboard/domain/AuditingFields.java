@@ -15,6 +15,7 @@ import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
 // 공통적으로 사용하고 싶은 필드가 있을 때 쓰는 어노테이션
+// 다른 클래스가 상속을 받을 클래스이므로 abstract 키워드 넣어주기
 @MappedSuperclass
 @ToString
 @Getter

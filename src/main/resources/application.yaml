@@ -10,8 +10,8 @@ logging:
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/board
-    username: ma
-    password: yo
+    username: master
+    password: y
     driver-class-name: com.mysql.cj.jdbc.Driver
 #  url: jdbc:h2:~/test
 #  username: sa
@@ -31,6 +31,8 @@ spring:
       detection-strategy: annotated
   spring.h2.console.enabled: true
   spring.h2.console.path: /h2-console
+  thymeleaf3:
+    decoupled-logic: true
 
 ---
 # 새로운 페이지
