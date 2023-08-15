@@ -6,6 +6,8 @@ import com.board.facamboard.domain.QArticleComment;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.core.types.dsl.StringExpression;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
@@ -18,6 +20,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long>,
         ,QuerydslBinderCustomizer<QArticle>
 {
 
+    // 검색어로 게시글을 검색하면 페이지 정보도 함께 반환함
+    Page<Article> findByTitle(Pageable pageable, String title);
 
     // 검색에 대한 세부적인 규칙이 재구성됨
     @Override

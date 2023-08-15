@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Getter
-@ToString
+@ToString(callSuper = true) // 안쪽 auditing 까지 들어가서 찍어주겠다
 @Table(indexes = {
         @Index(columnList = "title"), // comment는 title 없고 본문 검색으로 index 주기
         @Index(columnList = "hashtag"),
@@ -27,6 +27,8 @@ public class Article extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Setter @ManyToOne(optional = false) private UserAccount userAccount; // 유저 정보 (ID)
 
     @Setter @Column(nullable = false) private String title; // 제목
 
@@ -42,21 +44,22 @@ public class Article extends AuditingFields {
     // 강한 데이터 결합으로 데이터 처리 번거로움. 의도된 대로 데이터 운영 관리 불가능할 수 있음
     // 순환 참조 막으려면 Article에서 tostring 끊어줘야함.
     // article > articlecomment >> / article
-    @ToString.Exclude @OrderBy("id")  @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) // 공부 목적
+    @ToString.Exclude @OrderBy("createdAt DESC") @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) // 공부 목적
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
     // protected 사용해서 밖에서 New 사용하지 못하도록 함
     protected Article(){}
 
     //setter 로 접근하도록
-    private Article(String title, String content, String hashtag) {
+    private Article(UserAccount userAccount, String title, String content, String hashtag) {
+        this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.hashtag = hashtag;
     }
 
-    public static Article of(String title, String content, String hashtag) {
-        return new Article(title, content, hashtag);
+    public static Article of(UserAccount userAccount, String title, String content, String hashtag) {
+        return new Article(userAccount, title, content, hashtag);
     }
 
     //equalsandhashcode
