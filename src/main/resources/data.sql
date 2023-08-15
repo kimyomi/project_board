@@ -302,3 +302,7 @@ insert into article_comment (article_id, content, created_by, modified_by, creat
 insert into article_comment (article_id, content, created_by, modified_by, created_at, modified_at) values (true, 'Military/Government/Technical', 'Parrnell Harkin', 'Alley Shipton', '2022-09-21 17:56:08', '2023-03-08 10:02:18');
 insert into article_comment (article_id, content, created_by, modified_by, created_at, modified_at) values (true, 'Industrial Machinery/Components', 'Ebonee Hofton', 'Massimo Elecum', '2023-07-25 09:39:23', '2022-08-29 23:53:34');
 insert into article_comment (article_id, content, created_by, modified_by, created_at, modified_at) values (true, 'Hotels/Resorts', 'Glyn Chantree', 'Jehu Goodsir', '2023-04-25 07:40:50', '2023-04-13 04:10:50');
+
+
+insert into user_account (user_id, user_password, nickname, email, memo, created_at, created_by, modified_at, modified_by) values
+    ('uno', 'asdf1234', 'Uno', 'uno@mail.com', 'I am Uno.', now(), 'uno', now(), 'uno')
