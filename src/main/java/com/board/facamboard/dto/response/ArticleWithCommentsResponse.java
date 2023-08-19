@@ -10,12 +10,12 @@ import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 
+// 댓글까지 모두 포함된 article 객체
 @NoArgsConstructor
 @Getter
 @Setter
 @AllArgsConstructor
-public class ArticleWithCommentResponse implements Serializable {
-
+public class ArticleWithCommentsResponse implements Serializable {
     private Long id;
     private String title;
     private String content;
@@ -25,17 +25,17 @@ public class ArticleWithCommentResponse implements Serializable {
     private String nickname;
     private Set<ArticleCommentResponse> articleCommentResponses;
 
-    public static ArticleWithCommentResponse of(Long id, String title, String content, String hashtag, LocalDateTime createdAt, String email, String nickname, Set<ArticleCommentResponse> articleCommentResponses) {
-        return new ArticleWithCommentResponse(id, title, content, hashtag, createdAt, email, nickname, articleCommentResponses);
+    public static ArticleWithCommentsResponse of(Long id, String title, String content, String hashtag, LocalDateTime createdAt, String email, String nickname, Set<ArticleCommentResponse> articleCommentResponses) {
+        return new ArticleWithCommentsResponse(id, title, content, hashtag, createdAt, email, nickname, articleCommentResponses);
     }
 
-    public static ArticleWithCommentResponse from(ArticleWithCommentsDto dto) {
+    public static ArticleWithCommentsResponse from(ArticleWithCommentsDto dto) {
         String nickname = dto.getUserAccountDto().getNickname();
         if (nickname == null || nickname.isBlank()) {
             nickname = dto.getUserAccountDto().getUserId();
         }
 
-        return new ArticleWithCommentResponse(
+        return new ArticleWithCommentsResponse(
                 dto.getId(),
                 dto.getTitle(),
                 dto.getContent(),

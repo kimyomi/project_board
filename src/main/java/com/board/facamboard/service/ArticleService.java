@@ -5,44 +5,63 @@ import com.board.facamboard.dto.ArticleDto;
 import com.board.facamboard.dto.ArticleWithCommentsDto;
 import com.board.facamboard.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // 이걸로 가져옴
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-//import javax.transaction.Transactional;
+import javax.persistence.EntityNotFoundException;
 
-
-@Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
+@Service
 public class ArticleService {
     private final ArticleRepository articleRepository;
 
-    // page에 관한 정보를 내려줌
     @Transactional(readOnly = true)
-    public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable){
-//        return List.of(
-//                ArticleDto.of(LocalDateTime.now(),"master","제목","본문글","spring boot")
-//        );
-        return Page.empty();
+    public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) {
+        if (searchKeyword == null || searchKeyword.isBlank()) {
+            return articleRepository.findAll(pageable).map(ArticleDto::from);
+        }
+        Page<ArticleDto> result = null;
+
+        switch (searchType) {
+            case TITLE : result = articleRepository.findByTitleContaining(searchKeyword, pageable).map(ArticleDto::from); break;
+            case CONTENT :  result = articleRepository.findByContentContaining(searchKeyword, pageable).map(ArticleDto::from);break;
+            case ID :  result = articleRepository.findByUserAccount_UserIdContaining(searchKeyword, pageable).map(ArticleDto::from);break;
+            case NICKNAME :  result = articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable).map(ArticleDto::from);break;
+            case HASHTAG :  result = articleRepository.findByHashtag("#" + searchKeyword, pageable).map(ArticleDto::from);break;
+        };
+
+        return result;
     }
 
     @Transactional(readOnly = true)
-    public ArticleWithCommentsDto getArticle(Long articleId){
-        return null;
+    public ArticleWithCommentsDto getArticle(Long articleId) {
+        return articleRepository.findById(articleId)
+                .map(ArticleWithCommentsDto::from)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
 
-
-    public void saveArticle(ArticleDto dto){
-
+    public void saveArticle(ArticleDto dto) {
+        articleRepository.save(dto.toEntity());
     }
 
-    public void updateArticle(ArticleDto dto){
+    public void updateArticle(ArticleDto dto) {
+        try {
+            var article = articleRepository.getReferenceById(dto.getId());
+            if (dto.getTitle() != null) { article.setTitle(dto.getTitle()); }
+            if (dto.getContent() != null) { article.setContent(dto.getContent()); }
+            article.setHashtag(dto.getHashtag());
+        } catch (EntityNotFoundException e) {
+            log.warn("게시글 업데이트 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
+        }
     }
 
-    public void deleteArticle(Long articleId){
+    public void deleteArticle(long articleId) {
+        articleRepository.deleteById(articleId);
     }
 
 }

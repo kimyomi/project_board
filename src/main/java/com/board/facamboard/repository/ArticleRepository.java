@@ -21,7 +21,11 @@ public interface ArticleRepository extends JpaRepository<Article, Long>,
 {
 
     // 검색어로 게시글을 검색하면 페이지 정보도 함께 반환함
-    Page<Article> findByTitle(Pageable pageable, String title);
+    Page<Article> findByTitleContaining(String title, Pageable pageable);
+    Page<Article> findByContentContaining(String content, Pageable pageable);
+    Page<Article> findByUserAccount_UserIdContaining(String userId, Pageable pageable);
+    Page<Article> findByUserAccount_NicknameContaining(String nickname, Pageable pageable);
+    Page<Article> findByHashtag(String hashtag, Pageable pageable);
 
     // 검색에 대한 세부적인 규칙이 재구성됨
     @Override
